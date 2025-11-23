@@ -35,6 +35,7 @@
 build
 mass_spring/.ipynb_checkpoints
 .vscode
+.cache
 
 docs/_build
 demos/output*.txt

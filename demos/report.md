@@ -29,38 +29,54 @@ The Explicit Euler method approximates the derivative using the forward differen
 **Stability Analysis with Larger End-Times:**
 We tested the method with a fixed number of steps ($N=100$) but increasing end-times $T$ (ranging from $2\pi$ to $20\pi$).
 
+![Explicit Euler Time Plot](explicit_euler_larger_endtimes/explicit_euler_time_plot_endtime_62.83185307179586.png)
 ![Explicit Euler Phase Plot](explicit_euler_larger_endtimes/explicit_euler_phase_plot_endtime_62.83185307179586.png)
 
 **Observation:**
-The Explicit Euler method is **unstable** for this oscillatory system. The solution spirals outwards, indicating a non-physical increase in energy.
+The Explicit Euler method is **unstable** for this oscillatory system.
+*   **Time Plot:** The amplitude of the oscillation grows exponentially over time.
+*   **Phase Plot:** The solution spirals outwards, indicating a non-physical increase in energy.
+
 **Convergence:** When increasing the number of time steps (in the standard test case), the "spiraling out" effect becomes slower. The error decreases linearly with $O(\tau)$, meaning the trajectory stays closer to the exact circle for a longer time, but the inherent instability remains for any finite step size.
 
 ### 3.2 Implicit Euler Method
 The Implicit Euler method uses the backward difference quotient.
 
+![Implicit Euler Time Plot](implicit_euler/implicit_euler_time_plot_timesteps_31.png)
 ![Implicit Euler Phase Plot](implicit_euler/implicit_euler_phase_plot_timesteps_31.png)
 
 **Observation:**
-The Implicit Euler is unconditionally stable but exhibits strong **numerical damping**. The phase plot spirals inwards, meaning the system loses energy over time.
-**Convergence:** As we increase the number of time steps (e.g., to $N=200$), this damping effect is significantly reduced. The spiral becomes tighter and approaches the exact circle. Like the Explicit Euler, this is a first-order method, so the error reduces linearly with the step size.
+The Implicit Euler is unconditionally stable but exhibits strong **numerical damping**.
+*   **Time Plot:** The amplitude decreases visibly over time, as if friction were present.
+*   **Phase Plot:** The solution spirals inwards, meaning the system loses energy over time.
+
+**Convergence:** As we increase the number of time steps (e.g., to $N=200$), this damping effect is significantly reduced. The spiral becomes tighter and approaches the exact circle. Like the Explicit Euler, this is a first-order method, so the error reduces linearly with $O(\tau)$ as the step size decreases.
 
 ### 3.3 Improved Euler Method
 The Improved Euler method (Heun's method) is an explicit predictor-corrector scheme of order 2.
 
+![Improved Euler Time Plot](improved_euler/improved_euler_time_plot_timesteps_52.png)
 ![Improved Euler Phase Plot](improved_euler/improved_euler_phase_plot_timesteps_52.png)
 
 **Observation:**
-The Improved Euler method performs significantly better than the standard Euler methods. The phase plot is much closer to a closed circle.
+The Improved Euler method performs significantly better than the standard Euler methods.
+*   **Time Plot:** The amplitude appears stable over the simulated timeframe.
+*   **Phase Plot:** The trajectory is much closer to a closed circle compared to the Explicit Euler.
+
 **Convergence:** Since this is a second-order method with $O(\tau^2)$, the error decreases quadratically. Increasing the steps from 10 to 100 improves the accuracy by a factor of roughly 100. Even with moderate step sizes, the solution is visually almost indistinguishable from the exact solution.
 
 ### 3.4 Crank-Nicolson Method
 The Crank-Nicolson method is implicit and corresponds to the trapezoidal rule.
 
+![Crank Nicolson Time Plot](crank_nicolson/crank_nicolson_time_plot_timesteps_31.png)
 ![Crank Nicolson Phase Plot](crank_nicolson/crank_nicolson_phase_plot_timesteps_31.png)
 
 **Observation:**
-The Crank-Nicolson method demonstrates the best qualitative behavior. The phase plot shows a **closed loop**, indicating that the method preserves the energy of the system ("energy conservation").
-**Convergence:** While the amplitude is preserved even for small numbers of steps (large $\tau$), the *phase accuracy* (the speed of the oscillation along the circle) improves quadratically as we increase the number of steps.
+The Crank-Nicolson method demonstrates the best qualitative behavior.
+*   **Time Plot:** The amplitude is perfectly preserved; there is no visible growth or decay.
+*   **Phase Plot:** The phase plot shows a **closed loop**, indicating that the method preserves the energy of the system ("energy conservation").
+
+**Convergence:** While the amplitude is preserved even for small numbers of steps (large $\tau$), the *phase accuracy* (the speed of the oscillation along the circle) improves quadratically with $O(\tau^2)$ as we increase the number of steps.
 
 ## 4. Conclusion
 Our comparison highlights the properties of the different time-stepping schemes:

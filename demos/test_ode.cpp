@@ -34,17 +34,50 @@ public:
 };
 
 
-int main()
+int main(int argc, char* argv[])
 {
+
+  // default values
   double tend = 4*M_PI;
   int steps = 100;
+  std::string method = "improved";
+
+  if (argc > 1) {
+      steps = std::stoi(argv[1]); 
+  }
+
+  if (argc > 2) {
+    tend = std::stod(argv[2]);
+  }
+  
+  if (argc > 3) {
+    method = argv[3];
+  }
+
+
+
+  
   double tau = tend/steps;
 
   Vector<> y = { 1, 0 };  // initializer list
   auto rhs = std::make_shared<MassSpring>(1.0, 1.0);
   
-  ExplicitEuler stepper(rhs);
-  // ImplicitEuler stepper(rhs);
+  std::unique_ptr<ASC_ode::TimeStepper> stepper;
+
+  if (method == "explicit_euler") {
+    stepper = std::make_unique<ASC_ode::ExplicitEuler>(rhs);
+  } 
+  else if (method == "implicit_euler") {
+    stepper = std::make_unique<ASC_ode::ImplicitEuler>(rhs);
+  } 
+  else if (method == "improved_euler") {
+    stepper = std::make_unique<ASC_ode::ImprovedEuler>(rhs);
+  } 
+  else if (method == "crank_nicolson") {
+    stepper = std::make_unique<ASC_ode::CrankNicolson>(rhs);
+  } 
+
+
 
   std::ofstream outfile ("output_test_ode.txt");
   std::cout << 0.0 << "  " << y(0) << " " << y(1) << std::endl;
@@ -52,9 +85,10 @@ int main()
 
   for (int i = 0; i < steps; i++)
   {
-     stepper.DoStep(tau, y);
+     stepper->DoStep(tau, y);
 
      std::cout << (i+1) * tau << "  " << y(0) << " " << y(1) << std::endl;
      outfile << (i+1) * tau << "  " << y(0) << " " << y(1) << std::endl;
   }
+
 }

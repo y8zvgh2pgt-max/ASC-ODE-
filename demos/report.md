@@ -33,7 +33,7 @@ We tested the method with a fixed number of steps ($N=100$) but increasing end-t
 
 **Observation:**
 The Explicit Euler method is **unstable** for this oscillatory system. The solution spirals outwards, indicating a non-physical increase in energy.
-**Convergence:** When increasing the number of time steps (in the standard test case), the "spiraling out" effect becomes slower. The error decreases linearly ($O(\tau)$), meaning the trajectory stays closer to the exact circle for a longer time, but the inherent instability remains for any finite step size.
+**Convergence:** When increasing the number of time steps (in the standard test case), the "spiraling out" effect becomes slower. The error decreases linearly (order $O(\tau)$), meaning the trajectory stays closer to the exact circle for a longer time, but the inherent instability remains for any finite step size.
 
 ### 3.2 Implicit Euler Method
 The Implicit Euler method uses the backward difference quotient.
@@ -51,7 +51,7 @@ The Improved Euler method (Heun's method) is an explicit predictor-corrector sch
 
 **Observation:**
 The Improved Euler method performs significantly better than the standard Euler methods. The phase plot is much closer to a closed circle.
-**Convergence:** Since this is a second-order method ($O(\tau^2)$), the error decreases quadratically. Increasing the steps from 10 to 100 improves the accuracy by a factor of roughly 100. Even with moderate step sizes, the solution is visually almost indistinguishable from the exact solution.
+**Convergence:** Since this is a second-order method (order $O(\tau^2)$), the error decreases quadratically. Increasing the steps from 10 to 100 improves the accuracy by a factor of roughly 100. Even with moderate step sizes, the solution is visually almost indistinguishable from the exact solution.
 
 ### 3.4 Crank-Nicolson Method
 The Crank-Nicolson method is implicit and corresponds to the trapezoidal rule.

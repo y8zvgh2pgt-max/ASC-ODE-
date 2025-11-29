@@ -16,3 +16,8 @@ target_link_libraries (test_ode PUBLIC nanoblas)
 add_executable (demo_autodiff demos/demo_autodiff.cpp)
 target_link_libraries (demo_autodiff PUBLIC nanoblas)
 
+add_executable(demo_rc_circuit demos/demo_rc_circuit.cpp)
+target_link_libraries(demo_rc_circuit PUBLIC nanoblas)
+
+add_executable(demo_pendulum demos/demo_pendulum.cpp)
+target_link_libraries(demo_pendulum PUBLIC nanoblas)

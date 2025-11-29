@@ -53,10 +53,6 @@ int main(int argc, char* argv[])
   if (argc > 3) {
     method = argv[3];
   }
-
-
-
-  
   double tau = tend/steps;
 
   Vector<> y = { 1, 0 };  // initializer list

@@ -119,48 +119,6 @@ namespace ASC_ode
       NewtonSolver(m_equ,y);
     }
   };
-
-  class ExplicitRungeKutta : public TimeStepper
-  {
-    Matrix<> m_A;
-    Vector<> m_b;
-    Vector<> m_c;
-    
-    std::vector<Vector<>> m_k; 
-    Vector<> m_y_tmp;
-
-  public:
-    ExplicitRungeKutta(std::shared_ptr<NonlinearFunction> rhs, 
-                       Matrix<> A, VectorView<> b, VectorView<> c)
-      : TimeStepper(rhs), m_A(A), m_b(b), m_c(c), m_y_tmp(rhs->dimX())
-    {
-      for (size_t i = 0; i < b.size(); i++)
-        m_k.push_back(Vector<>(rhs->dimF()));
-    }
-
-    void DoStep(double tau, VectorView<double> y) override
-    {
-      size_t s = m_b.size();
-
-      for (size_t i = 0; i < s; i++)
-      {
-        m_y_tmp = y; 
-        for (size_t j = 0; j < i; j++)
-        {
-          double factor = tau * m_A(i, j);
-          if (factor != 0.0)
-            m_y_tmp += factor * m_k[j];
-        }
-
-        m_rhs->evaluate(m_y_tmp, m_k[i]);
-      }
-
-      for (size_t i = 0; i < s; i++)
-      {
-        y += (tau * m_b(i)) * m_k[i];
-      }
-    }
-  };
 }
 
 #endif

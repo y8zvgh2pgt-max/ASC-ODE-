@@ -42,57 +42,62 @@ int main(int argc, char* argv[])
   double tend = 4*M_PI;
   int steps = 100;
   std::string method = "improved";
+  int stages = 3;
 
   if (argc > 1) steps = std::stoi(argv[1]); 
   if (argc > 2) tend = std::stod(argv[2]);
   if (argc > 3) method = argv[3];
-  
+  if (argc > 4) stages = std::stoi(argv[4]);   // only used for gauss_legendre / radau
+
   double tau = tend/steps;
 
   Vector<> y = { 1, 0 }; 
   auto rhs = std::make_shared<MassSpring>(1.0, 1.0);
 
+  std::unique_ptr<ASC_ode::TimeStepper> stepper;
 
-
-/*
-  Vector<> Radau(3), RadauWeight(3);
-  GaussRadau (Radau, RadauWeight);
-  // not sure about weights, comput them via ComputeABfromC
-  cout << "Radau = " << Radau << ", weight = " << RadauWeight <<  endl;
-        Vector<> Gauss2c(2), Gauss3c(3);
-*/
- 
-
-  // ExplicitEuler stepper(rhs);
-  // ImplicitEuler stepper(rhs);
-
-  // RungeKutta stepper(rhs, Gauss2a, Gauss2b, Gauss2c);
-
-  // Gauss3c .. points tabulated, compute a,b:
-  auto [Gauss3a,Gauss3b] = ComputeABfromC (Gauss3c);
-  ImplicitRungeKutta stepper(rhs, Gauss3a, Gauss3b, Gauss3c);
-
-
-  /*
-  // arbitrary order Gauss-Legendre
-  int stages = 5;
-  Vector<> c(stages), b1(stages);
-  GaussLegendre(c, b1);
-
-  auto [a, b] = ComputeABfromC(c);
-  ImplicitRungeKutta stepper(rhs, a, b, c);
-  */
-
-  /* 
-  // arbitrary order Radau
-  int stages = 5;
-  Vector<> c(stages), b1(stages);
-  GaussRadau(c, b1);
-
-  auto [a, b] = ComputeABfromC(c);
-  ImplicitRungeKutta stepper(rhs, a, b, c);
-  */
-
+  if (method == "explicit_euler") {
+    stepper = std::make_unique<ASC_ode::ExplicitEuler>(rhs);
+  } 
+  else if (method == "implicit_euler") {
+    stepper = std::make_unique<ASC_ode::ImplicitEuler>(rhs);
+  } 
+  else if (method == "improved_euler") {
+    stepper = std::make_unique<ASC_ode::ImprovedEuler>(rhs);
+  } 
+  else if (method == "crank_nicolson") {
+    stepper = std::make_unique<ASC_ode::CrankNicolson>(rhs);
+  }
+  // fixed Gauss-Legendre 2-stage (order 4)
+  else if (method == "implicit_rk_gauss2") {
+    stepper = std::make_unique<ASC_ode::ImplicitRungeKutta>(rhs, Gauss2a, Gauss2b, Gauss2c);
+  }
+  // fixed Gauss-Legendre 3-stage (order 6)
+  else if (method == "implicit_rk_gauss3") {
+    auto [Gauss3a, Gauss3b] = ComputeABfromC(Gauss3c);
+    stepper = std::make_unique<ASC_ode::ImplicitRungeKutta>(rhs, Gauss3a, Gauss3b, Gauss3c);
+  }
+  // arbitrary-order Gauss-Legendre (implicit RK, order 2*stages)
+  else if (method == "implicit_rk_gauss_legendre") {
+    Vector<> c(stages), w(stages);
+    GaussLegendre(c, w);
+    auto [a, b] = ComputeABfromC(c);
+    stepper = std::make_unique<ASC_ode::ImplicitRungeKutta>(rhs, a, b, c);
+  }
+  // arbitrary-order Radau IIA (implicit RK, order 2*stages-1)
+  else if (method == "implicit_rk_radau") {
+    Vector<> c(stages), w(stages);
+    GaussRadau(c, w);
+    auto [a, b] = ComputeABfromC(c);
+    stepper = std::make_unique<ASC_ode::ImplicitRungeKutta>(rhs, a, b, c);
+  }
+  // explicit RK methods via ExplicitRungeKutta
+  else if (method == "explicit_rk2") {          // explicit midpoint (2-stage RK2)
+    stepper = std::make_unique<ExplicitRungeKutta>(rhs, ERK2A, ERK2b, ERK2c);
+  }
+  else if (method == "explicit_rk4") {          // classical RK4
+    stepper = std::make_unique<ExplicitRungeKutta>(rhs, ERK4A, ERK4b, ERK4c);
+  }
 
   std::ofstream outfile ("output_test_ode.txt");
   outfile << 0.0 << "  " << y(0) << " " << y(1) << std::endl;

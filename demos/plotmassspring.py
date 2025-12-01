@@ -4,7 +4,19 @@ import matplotlib.pyplot as plt
 import os
 import shutil
 
-methods = ["explicit_euler", "implicit_euler", "improved_euler", "crank_nicolson"]
+methods = [
+    "explicit_euler",
+    "implicit_euler",
+    "improved_euler",
+    "crank_nicolson",
+    "explicit_rk2",
+    "explicit_rk4",
+    "implicit_rk_gauss2",
+    "implicit_rk_gauss3",
+    "implicit_rk_gauss_legendre",
+    "implicit_rk_radau",
+]
+
 timesteps = np.linspace(10, 200, 10, dtype=int)
 t_end = 4*np.pi
 explicit_euler_larger_endtimes = np.linspace(2*np.pi, 20*np.pi, 10)
@@ -12,16 +24,18 @@ main_dir_name = "mass_spring"
 
 
 for method in methods:
-    # remove folder if it already exists
-    if os.path.exists(f"{main_dir_name}/{method}"):
-        shutil.rmtree(f"{main_dir_name}/{method}")
 
-    os.makedirs(f"{main_dir_name}/{method}")
+    folder = f"{main_dir_name}/{method}"
+    # remove folder if it already exists
+    if os.path.exists(folder):
+        shutil.rmtree(folder)
+
+    os.makedirs(folder)
 
     for timestep in timesteps:
 
         shell_command = f"../build/test_ode {timestep} {t_end} {method}"
-        subprocess.run(shell_command, shell = True)
+        subprocess.run(shell_command, shell=True)
         print(shell_command)
 
         data = np.loadtxt('output_test_ode.txt', usecols=(0, 1, 2))
@@ -33,7 +47,7 @@ for method in methods:
         plt.title(f'{method}: Mass-Spring System Time Evolution for {timestep} timesteps.')
         plt.legend()
         plt.grid()
-        plt.savefig(f"{main_dir_name}/{method}/{method}_time_plot_timesteps_{timestep}.png")
+        plt.savefig(f"{folder}/{method}_time_plot_timesteps_{timestep}.png")
         plt.close()
 
         plt.plot(data[:,1], data[:,2], label='phase plot')
@@ -42,7 +56,7 @@ for method in methods:
         plt.title(f'{method}: Mass-Spring System Phase Plot for {timestep} timesteps.')
         plt.legend()
         plt.grid()
-        plt.savefig(f"{main_dir_name}/{method}/{method}_phase_plot_timesteps_{timestep}.png")
+        plt.savefig(f"{folder}/{method}_phase_plot_timesteps_{timestep}.png")
         plt.close()
 
 
@@ -50,9 +64,10 @@ folder = f"{main_dir_name}/explicit_euler_larger_endtimes"
 if os.path.exists(folder):
     shutil.rmtree(folder)
 os.makedirs(folder)
+
 for endtime in explicit_euler_larger_endtimes:
     shell_command = f"../build/test_ode 100 {endtime} explicit_euler"
-    subprocess.run(shell_command, shell = True)
+    subprocess.run(shell_command, shell=True)
     print(shell_command)
 
     data = np.loadtxt('output_test_ode.txt', usecols=(0, 1, 2))
@@ -75,5 +90,3 @@ for endtime in explicit_euler_larger_endtimes:
     plt.grid()
     plt.savefig(f"{folder}/explicit_euler_phase_plot_endtime_{endtime}.png")
     plt.close()
-
-

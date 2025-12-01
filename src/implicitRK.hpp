@@ -48,10 +48,54 @@ namespace ASC_ode {
     }
   };
 
+  class ExplicitRungeKutta : public TimeStepper
+{
+    Matrix<> m_A;
+    Vector<> m_b;
+    Vector<> m_c;
 
+    std::vector<Vector<>> m_k;  // stage derivatives
+    Vector<> m_y_tmp;           // temporary state
 
+public:
+    ExplicitRungeKutta(std::shared_ptr<NonlinearFunction> rhs,
+                       const Matrix<> &A,
+                       const Vector<> &b,
+                       const Vector<> &c)
+      : TimeStepper(rhs),
+        m_A(A),
+        m_b(b),
+        m_c(c),
+        m_y_tmp(rhs->dimX())
+    {
+      size_t s = m_b.size();
+      m_k.reserve(s);
+      for (size_t i = 0; i < s; ++i)
+        m_k.emplace_back(rhs->dimF());
+    }
 
+    void DoStep(double tau, VectorView<double> y) override
+    {
+      size_t s = m_b.size();
 
+      for (size_t i = 0; i < s; ++i)
+      {
+        m_y_tmp = y;
+
+        for (size_t j = 0; j < i; ++j)
+        {
+          double factor = tau * m_A(i, j);
+          if (factor != 0.0)
+            m_y_tmp += factor * m_k[j];
+        }
+
+        m_rhs->evaluate(m_y_tmp, m_k[i]);
+      }
+
+      for (size_t i = 0; i < s; ++i)
+        y += tau * m_b(i) * m_k[i];
+    }
+};
 
 
 Matrix<double> Gauss2a { { 0.25, 0.25 - sqrt(3)/6 }, { 0.25 + sqrt(3)/6, 0.25 } };
@@ -60,6 +104,22 @@ Vector<> Gauss2c { 0.5 - sqrt(3)/6, 0.5 + sqrt(3)/6 };
 
 
 Vector<> Gauss3c { 0.5 - sqrt(15)/10, 0.5, 0.5+sqrt(15)/10 };
+
+
+// Explicit RK2: midpoint rule
+inline Matrix<> ERK2A { {0.0, 0.0},
+                        {0.5, 0.0} };
+inline Vector<> ERK2b { 0.0, 1.0 };
+inline Vector<> ERK2c { 0.0, 0.5 };
+
+// Explicit RK4: classical Runge–Kutta
+inline Matrix<> ERK4A { {0.0, 0.0, 0.0, 0.0},
+                        {0.5, 0.0, 0.0, 0.0},
+                        {0.0, 0.5, 0.0, 0.0},
+                        {0.0, 0.0, 1.0, 0.0} };
+inline Vector<> ERK4b { 1.0/6.0, 1.0/3.0, 1.0/3.0, 1.0/6.0 };
+inline Vector<> ERK4c { 0.0, 0.5, 0.5, 1.0 };
+
 
 
 // codes from Numerical Recipes, https://numerical.recipes/book.html

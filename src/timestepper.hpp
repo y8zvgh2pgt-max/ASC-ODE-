@@ -130,7 +130,8 @@ namespace ASC_ode
     Vector<> m_y_tmp;
 
   public:
-    ExplicitRungeKutta(std::shared_ptr<NonlinearFunction> rhs, MatrixView<double> A, VectorView<> b, VectorView<> c)
+    ExplicitRungeKutta(std::shared_ptr<NonlinearFunction> rhs, 
+                       Matrix<> A, VectorView<> b, VectorView<> c)
       : TimeStepper(rhs), m_A(A), m_b(b), m_c(c), m_y_tmp(rhs->dimX())
     {
       for (size_t i = 0; i < b.size(); i++)

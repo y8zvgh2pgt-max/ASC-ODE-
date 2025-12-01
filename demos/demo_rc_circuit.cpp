@@ -51,21 +51,38 @@ public:
   }
 };
 
-int main()
+int main(int argc, char* argv[])
 {
   double R = 1.0;
   double C = 1.0;
 
+  // default values
   double tend = 0.1;
-  int steps = 5000;
+  int steps = 100;
+  std::string method = "improved";
+
+  if (argc > 1) steps = std::stoi(argv[1]); 
+  if (argc > 2) method = argv[2];
+  
   double tau = tend/steps;
 
-  Vector<> y = { 0.0, 0.0 }; 
+  Vector<> y = { 0, 0 }; 
+  auto rhs = std::make_shared<RCCircuit>(R, C);
+  
+  std::unique_ptr<ASC_ode::TimeStepper> stepper;
 
-  auto rhs = make_shared<RCCircuit>(R, C);
-
-  // We chose crank nicolson as a stepper
-  CrankNicolson stepper(rhs);
+  if (method == "explicit_euler") {
+    stepper = std::make_unique<ASC_ode::ExplicitEuler>(rhs);
+  } 
+  else if (method == "implicit_euler") {
+    stepper = std::make_unique<ASC_ode::ImplicitEuler>(rhs);
+  } 
+  else if (method == "improved_euler") {
+    stepper = std::make_unique<ASC_ode::ImprovedEuler>(rhs);
+  } 
+  else if (method == "crank_nicolson") {
+    stepper = std::make_unique<ASC_ode::CrankNicolson>(rhs);
+  }
 
   ofstream outfile("output_rc.txt");
   
@@ -75,7 +92,7 @@ int main()
 
   for (int i = 0; i < steps; i++)
   {
-     stepper.DoStep(tau, y);
+     stepper->DoStep(tau, y);
      outfile << y(1) << " " << y(0) << " " << rhs->U0(y(1)) << endl;
   }
   

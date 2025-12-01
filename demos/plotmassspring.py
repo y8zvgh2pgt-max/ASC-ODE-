@@ -8,14 +8,15 @@ methods = ["explicit_euler", "implicit_euler", "improved_euler", "crank_nicolson
 timesteps = np.linspace(10, 200, 10, dtype=int)
 t_end = 4*np.pi
 explicit_euler_larger_endtimes = np.linspace(2*np.pi, 20*np.pi, 10)
+main_dir_name = "mass_spring"
 
 
 for method in methods:
     # remove folder if it already exists
-    if os.path.exists(method):
-        shutil.rmtree(method)
+    if os.path.exists(f"{main_dir_name}/{method}"):
+        shutil.rmtree(f"{main_dir_name}/{method}")
 
-    os.makedirs(method)
+    os.makedirs(f"{main_dir_name}/{method}")
 
     for timestep in timesteps:
 
@@ -32,7 +33,7 @@ for method in methods:
         plt.title(f'{method}: Mass-Spring System Time Evolution for {timestep} timesteps.')
         plt.legend()
         plt.grid()
-        plt.savefig(f"{method}/{method}_time_plot_timesteps_{timestep}.png")
+        plt.savefig(f"{main_dir_name}/{method}/{method}_time_plot_timesteps_{timestep}.png")
         plt.close()
 
         plt.plot(data[:,1], data[:,2], label='phase plot')
@@ -41,11 +42,11 @@ for method in methods:
         plt.title(f'{method}: Mass-Spring System Phase Plot for {timestep} timesteps.')
         plt.legend()
         plt.grid()
-        plt.savefig(f"{method}/{method}_phase_plot_timesteps_{timestep}.png")
+        plt.savefig(f"{main_dir_name}/{method}/{method}_phase_plot_timesteps_{timestep}.png")
         plt.close()
 
 
-folder = "explicit_euler_larger_endtimes"
+folder = f"{main_dir_name}/explicit_euler_larger_endtimes"
 if os.path.exists(folder):
     shutil.rmtree(folder)
 os.makedirs(folder)

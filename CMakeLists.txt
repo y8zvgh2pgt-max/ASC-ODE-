@@ -21,3 +21,6 @@ target_link_libraries(demo_rc_circuit PUBLIC nanoblas)
 
 add_executable(demo_pendulum demos/demo_pendulum.cpp)
 target_link_libraries(demo_pendulum PUBLIC nanoblas)
+
+add_executable(demo_legendre demos/demo_legendre.cpp)
+target_link_libraries(demo_legendre PUBLIC nanoblas)

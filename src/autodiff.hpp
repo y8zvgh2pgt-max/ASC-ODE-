@@ -105,9 +105,7 @@ namespace ASC_ode
        return result;
    }
 
-   // --- Ergänzungen für autodiff.hpp ---
 
-   // Subtraktion (a - b)
    template <size_t N, typename T = double>
    AutoDiff<N, T> operator- (const AutoDiff<N, T>& a, const AutoDiff<N, T>& b)
    {
@@ -117,7 +115,6 @@ namespace ASC_ode
        return result;
    }
 
-   // Unäres Minus (-a)
    template <size_t N, typename T = double>
    AutoDiff<N, T> operator- (const AutoDiff<N, T>& a)
    {
@@ -127,7 +124,6 @@ namespace ASC_ode
        return result;
    }
 
-   // Division (a / b) - Quotientenregel!
    template <size_t N, typename T = double>
    AutoDiff<N, T> operator/ (const AutoDiff<N, T>& a, const AutoDiff<N, T>& b)
    {
@@ -140,7 +136,6 @@ namespace ASC_ode
        return result;
    }
 
-   // Cosinus (Kettenregel: cos(u)' = -sin(u) * u')
    template <size_t N, typename T = double>
    AutoDiff<N, T> cos(const AutoDiff<N, T> &a)
    {
@@ -150,7 +145,6 @@ namespace ASC_ode
        return result;
    }
 
-   // Exponentialfunktion (exp(u)' = exp(u) * u')
    template <size_t N, typename T = double>
    AutoDiff<N, T> exp(const AutoDiff<N, T> &a)
    {
@@ -160,11 +154,40 @@ namespace ASC_ode
            result.deriv()[i] = exp_val * a.deriv()[i];
        return result;
    }
-   
-   // Misch-Operatoren (AutoDiff +/-/* double) fehlen oft noch, 
-   // aber für das Pendel reicht meistens das oben.
 
+   template <size_t N, typename T = double>
+   AutoDiff<N, T> log(const AutoDiff<N, T> &a)
+   {
+       AutoDiff<N, T> result(std::log(a.value()));
+       for (size_t i = 0; i < N; i++)
+           result.deriv()[i] = a.deriv()[i] / a.value();
+       return result;
+   }
 
+   template <size_t N, typename T = double>
+   AutoDiff<N, T> pow(const AutoDiff<N, T> &a, double n)
+   {
+       T val = std::pow(a.value(), n);
+       AutoDiff<N, T> result(val);
+       T deriv_factor = n * std::pow(a.value(), n - 1);
+       for (size_t i = 0; i < N; i++)
+           result.deriv()[i] = deriv_factor * a.deriv()[i];
+       return result;
+    }
+    template <size_t N, typename T = double>
+    AutoDiff<N, T> operator* (T a, const AutoDiff<N, T>& b)
+    {
+        AutoDiff<N, T> result(a * b.value());
+        for (size_t i = 0; i < N; ++i)
+            result.deriv()[i] = a * b.deriv()[i];
+        return result;
+    }
+
+    template <size_t N, typename T = double>
+    AutoDiff<N, T> operator* (const AutoDiff<N, T>& a, T b)
+    {
+        return b * a;
+    }
 } // namespace ASC_ode
 
 #endif

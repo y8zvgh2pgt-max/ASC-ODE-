@@ -1,18 +1,38 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import os
+import shutil
+import subprocess
 
-data = np.loadtxt("../build/output_rc.txt")
-t = data[:, 0]
-Uc = data[:, 1]
-U0 = data[:, 2]
 
-plt.figure(figsize=(10, 6))
-plt.plot(t, U0, label="Quelle U0(t) (Input)", linestyle="--", alpha=0.6)
-plt.plot(t, Uc, label="Kondensator Uc(t) (Output)", linewidth=2)
+methods = ["explicit_euler", "implicit_euler", "improved_euler", "crank_nicolson"]
+timesteps = np.linspace(10, 200, 10, dtype=int)
+main_dir_name = "rc_circuit"
 
-plt.xlabel("Zeit t [s]")
-plt.ylabel("Spannung [V]")
-plt.title("RC-Kreis Simulation (Crank-Nicolson)")
-plt.legend()
-plt.grid()
-plt.savefig("rc_circuit_plot.png")
+
+for method in methods:
+    folder = f"{main_dir_name}/{method}"
+
+    # remove folder if it already exists
+    if os.path.exists(f"{folder}"):
+        shutil.rmtree(f"{folder}")
+
+    os.makedirs(f"{folder}")
+
+    for timestep in timesteps:
+
+        shell_command = f"../build/demo_rc_circuit {timestep} {method}"
+        subprocess.run(shell_command, shell = True)
+        print(shell_command)
+
+        data = np.loadtxt('output_rc.txt', usecols=(0, 1, 2))
+
+        plt.plot(data[:,0], data[:,2], label="source U0(t) (Input)", linestyle="--", alpha=0.6)
+        plt.plot(data[:,0], data[:,1], label="capacitor Uc(t) (Output)", linewidth=2)
+        plt.xlabel("time t [s]")
+        plt.ylabel("voltage [V]")
+        plt.title(f"{method}: rc-circuit simulation for {timestep} timesteps.")
+        plt.legend()
+        plt.grid()
+        plt.savefig(f"{folder}/{method}_rc_circuit_plot_timesteps_{timestep}.png")
+        plt.close()

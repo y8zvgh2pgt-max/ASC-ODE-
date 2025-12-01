@@ -29,8 +29,8 @@ The Explicit Euler method approximates the derivative using the forward differen
 **Stability Analysis with Larger End-Times:**
 We tested the method with a fixed number of steps ($N=100$) but increasing end-times $T$ (ranging from $2\pi$ to $20\pi$).
 
-![Explicit Euler Time Plot](../demos/explicit_euler_larger_endtimes/explicit_euler_time_plot_endtime_62.83185307179586.png)
-![Explicit Euler Phase Plot](../demos/explicit_euler_larger_endtimes/explicit_euler_phase_plot_endtime_62.83185307179586.png)
+![Explicit Euler Time Plot](../demos/mass_spring/explicit_euler_larger_endtimes/explicit_euler_time_plot_endtime_62.83185307179586.png)
+![Explicit Euler Phase Plot](../demos/mass_spring/explicit_euler_larger_endtimes/explicit_euler_phase_plot_endtime_62.83185307179586.png)
 
 **Observation:**
 The Explicit Euler method is **unstable** for this oscillatory system.
@@ -42,8 +42,8 @@ The Explicit Euler method is **unstable** for this oscillatory system.
 ### 3.2 Implicit Euler Method
 The Implicit Euler method uses the backward difference quotient.
 
-![Implicit Euler Time Plot](../demos/implicit_euler/implicit_euler_time_plot_timesteps_31.png)
-![Implicit Euler Phase Plot](../demos/implicit_euler/implicit_euler_phase_plot_timesteps_31.png)
+![Implicit Euler Time Plot](../demos/mass_spring/implicit_euler/implicit_euler_time_plot_timesteps_31.png)
+![Implicit Euler Phase Plot](../demos/mass_spring/implicit_euler/implicit_euler_phase_plot_timesteps_31.png)
 
 **Observation:**
 The Implicit Euler is unconditionally stable but exhibits strong **numerical damping**.
@@ -55,8 +55,8 @@ The Implicit Euler is unconditionally stable but exhibits strong **numerical dam
 ### 3.3 Improved Euler Method
 The Improved Euler method (Heun's method) is an explicit predictor-corrector scheme of order 2.
 
-![Improved Euler Time Plot](../demos/improved_euler/improved_euler_time_plot_timesteps_52.png)
-![Improved Euler Phase Plot](../demos/improved_euler/improved_euler_phase_plot_timesteps_52.png)
+![Improved Euler Time Plot](../demos/mass_spring/improved_euler/improved_euler_time_plot_timesteps_52.png)
+![Improved Euler Phase Plot](../demos/mass_spring/improved_euler/improved_euler_phase_plot_timesteps_52.png)
 
 **Observation:**
 The Improved Euler method performs significantly better than the standard Euler methods.
@@ -68,8 +68,8 @@ The Improved Euler method performs significantly better than the standard Euler 
 ### 3.4 Crank-Nicolson Method
 The Crank-Nicolson method is implicit and corresponds to the trapezoidal rule.
 
-![Crank Nicolson Time Plot](../demos/crank_nicolson/crank_nicolson_time_plot_timesteps_31.png)
-![Crank Nicolson Phase Plot](../demos/crank_nicolson/crank_nicolson_phase_plot_timesteps_31.png)
+![Crank Nicolson Time Plot](../demos/mass_spring/crank_nicolson/crank_nicolson_time_plot_timesteps_31.png)
+![Crank Nicolson Phase Plot](../demos/mass_spring/crank_nicolson/crank_nicolson_phase_plot_timesteps_31.png)
 
 **Observation:**
 The Crank-Nicolson method demonstrates the best qualitative behavior.

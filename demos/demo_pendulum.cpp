@@ -5,7 +5,7 @@
 
 #include <nonlinfunc.hpp>
 #include <timestepper.hpp>
-#include <autodiff.hpp> // Wichtig!
+#include <autodiff.hpp>
 
 using namespace std;
 using namespace ASC_ode;
@@ -46,8 +46,8 @@ public:
   void T_evaluate (VectorView<T> x, VectorView<T> f) const
   {
     f(0) = x(1);
-    
-    f(1) = - (m_gravity / m_length) * sin(x(0));
+
+    f(1) = - T(m_gravity / m_length) * sin(x(0));
   }
 };
 
@@ -71,5 +71,4 @@ int main()
      stepper.DoStep(tau, y);
      out << (i+1)*tau << " " << y(0) << " " << y(1) << endl;
   }
-  cout << "Pendel simuliert. Plotte output_pendulum.txt!" << endl;
 }

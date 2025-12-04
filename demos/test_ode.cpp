@@ -74,21 +74,21 @@ int main(int argc, char* argv[])
   }
   // fixed Gauss-Legendre 3-stage (order 6)
   else if (method == "implicit_rk_gauss3") {
-    auto [Gauss3a, Gauss3b] = ComputeABfromC(Gauss3c);
+    auto [Gauss3a, Gauss3b] = computeABfromC(Gauss3c);
     stepper = std::make_unique<ASC_ode::ImplicitRungeKutta>(rhs, Gauss3a, Gauss3b, Gauss3c);
   }
   // arbitrary-order Gauss-Legendre (implicit RK, order 2*stages)
   else if (method == "implicit_rk_gauss_legendre") {
     Vector<> c(stages), w(stages);
     GaussLegendre(c, w);
-    auto [a, b] = ComputeABfromC(c);
+    auto [a, b] = computeABfromC(c);
     stepper = std::make_unique<ASC_ode::ImplicitRungeKutta>(rhs, a, b, c);
   }
   // arbitrary-order Radau IIA (implicit RK, order 2*stages-1)
   else if (method == "implicit_rk_radau") {
     Vector<> c(stages), w(stages);
     GaussRadau(c, w);
-    auto [a, b] = ComputeABfromC(c);
+    auto [a, b] = computeABfromC(c);
     stepper = std::make_unique<ASC_ode::ImplicitRungeKutta>(rhs, a, b, c);
   }
   // explicit RK methods via ExplicitRungeKutta
@@ -104,7 +104,7 @@ int main(int argc, char* argv[])
 
   for (int i = 0; i < steps; i++)
   {
-     stepper->DoStep(tau, y);
+     stepper->doStep(tau, y);
      outfile << (i+1) * tau << "  " << y(0) << " " << y(1) << std::endl;
   }
 }

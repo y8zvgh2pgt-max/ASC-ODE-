@@ -68,20 +68,19 @@ namespace ASC_ode
       m_k1(rhs->dimF()), 
       m_k2(rhs->dimF()), 
       m_ytmp(rhs->dimX()) 
-    { }
+    {}
 
-    void DoStep(double tau, VectorView<double> y) override
+    void doStep(double tau, VectorView<double> y) override
     {
       m_rhs->evaluate(y, m_k1);
 
       m_ytmp = y;
-      m_ytmp += tau * m_k1;
+      m_ytmp += 0.5 * tau * m_k1;
 
       m_rhs->evaluate(m_ytmp, m_k2);
-
-      y += (0.5 * tau) * m_k1;
-      y += (0.5 * tau) * m_k2;
+      y += tau * m_k2;
     }
+
   };
 
 
@@ -108,7 +107,7 @@ namespace ASC_ode
       m_equ = ynew - m_yold - half_tau_f_old - half_tau_f_new;
     }
 
-    void DoStep(double tau, VectorView<double> y) override
+    void doStep(double tau, VectorView<double> y) override
     {
       m_yold->set(y);
       m_tau->set(tau);

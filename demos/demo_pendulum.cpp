@@ -68,7 +68,7 @@ int main()
   
   for (int i = 0; i < steps; i++)
   {
-     stepper.DoStep(tau, y);
+     stepper.doStep(tau, y);
      out << (i+1)*tau << " " << y(0) << " " << y(1) << endl;
   }
 }

@@ -74,7 +74,7 @@ public:
         m_k.emplace_back(rhs->dimF());
     }
 
-    void DoStep(double tau, VectorView<double> y) override
+    void doStep(double tau, VectorView<double> y) override
     {
       size_t s = m_b.size();
 

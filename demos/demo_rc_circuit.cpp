@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
 
   for (int i = 0; i < steps; i++)
   {
-     stepper->DoStep(tau, y);
+     stepper->doStep(tau, y);
      outfile << y(1) << " " << y(0) << " " << rhs->U0(y(1)) << endl;
   }
   

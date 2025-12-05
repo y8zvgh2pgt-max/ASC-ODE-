@@ -1,6 +1,8 @@
 #ifndef IMPLICITRK_HPP
 #define IMPLICITRK_HPP
 
+#include <memory>
+#include "timestepper.hpp"
 #include <vector.hpp>
 #include <matrix.hpp>
 #include <inverse.hpp>

@@ -4,12 +4,10 @@ project(ASC_ode)
 set (CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-
 include_directories(src nanoblas/src)
 
 add_subdirectory (src)
 add_subdirectory (nanoblas)
-
 add_subdirectory (mechsystem)
 
 add_executable (test_ode demos/test_ode.cpp)
